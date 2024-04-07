@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+    <title>Instagram</title>
+<style>
+table, th, td {
+    border: 1px solid black;
+  border-collapse: collapse
+}
+
+
+td {
+  margin: 20px;
+  padding: 11px;
+}
+
+td {
+  font-size: 15px;
+}
+
+</style>
+<body>
+    <h1>Instagram Data Model & Analytics Project</h1>
+    <P>
+        In this project, our goal is to design a comprehensive data model for Instagram using PostgreSQL. We'll start by conceptualizing the necessary tables and relationships to accurately represent the Instagram ecosystem within a database.<br>
+
+Firstly, we'll translate our conceptual model into PostgreSQL syntax by creating the required tables. This involves defining the structure of each table, including primary keys, foreign keys, and appropriate data types.<br>
+
+Once our tables are set up, we'll generate SQL create table statements to implement our database schema within PostgreSQL.
+
+Next, we'll populate our tables with sample data to simulate a realistic Instagram dataset. This step is crucial for testing our queries and ensuring that our data model functions as intended.<br>
+<br>
+To demonstrate the dynamic nature of our data model, we'll provide examples of how to update existing data within our tables using SQL update statements.
+
+Moving into analytics, we'll explore SQL queries with various conditions such as where clause for filtering, orderby for sorting, group by for aggregating data, and having clause for further filtering aggregated results.<br>
+
+Additionally, we'll explain different aggregation functions available in PostgreSQL to summarize and analyze our data effectively.<br>
+<br>
+To deepen our understanding of SQL capabilities, we'll cover advanced topics including subqueries, window functions, Common Table Expressions (CTEs), and the use of case statements for conditional logic.<br>
+
+Furthermore, we'll delve into date manipulation techniques such as date casting and working with date functions to handle timestamps, which are essential for time-based analysis in Instagram-like applications.<br>
+By the end of this project, we aim to have a robust data model that not only represents Instagram's features accurately but also showcases the powerful capabilities of PostgreSQL for managing and analyzing complex datasets. Let's dive in and get started!<br>
+    </P>
+<h3>Designing Data Model</h3>
+<h2>Users</h2>
+
+<table style="width:40%">
+  <tr>
+    <th>Column</th>
+    <th>Type</th>
+    <th>Constraints</th>
+  </tr>
+  <tr>
+    <td>user_id</td>
+    <td>SERIAL</td>
+    <td>PRIMARY KEY</td>
+  </tr>
+  <tr>
+    <td>name</td>
+    <td>VARCHAR(50)</td>
+    <td>NOT NULL</td>
+  </tr>
+   <tr>
+    <td>email</td>
+    <td>VARCHAR(100)</td>
+    <td>UNIQUE NOT NULL</td>
+  </tr>
+  <tr>
+    <td>phone_number</td>
+    <td>VARCHAR(20)</td>
+    <td>UNIQUE</td>
+  </tr>
+</table>
+<h2>Posts</h2>
+<table style="width:40%">
+  <tr>
+    <th>Column</th>
+    <th>Type</th>
+    <th>Constraints</th>
+  </tr>
+  <tr>
+    <td>post_id</td>
+    <td>SERIAL</td>
+    <td>PRIMARY KEY</td>
+  </tr>
+  <tr>
+    <td>user_id</td>
+    <td>INTEGER</td>
+    <td>NOT NULL,FOREIGN KEY (user_id) REFERENCES Users(user_id)</td>
+  </tr>
+   <tr>
+    <td>caption</td>
+    <td>Text</td>
+  </tr>
+  <tr>
+    <td>image_url</td>
+    <td>VARCHAR(200)</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>created_at</td>
+    <td>TIMESTAMP</td>
+    <td>DEFAULT CURRENT_TIMESTAMP</td>
+  </tr>
+</table>
+</table>
+<h2>Comments</h2>
+<table style="width:40%">
+  <tr>
+    <th>Column</th>
+    <th>Type</th>
+    <th>Constraints</th>
+  </tr>
+  <tr>
+    <td>comment_id</td>
+    <td>SERIAL</td>
+    <td>PRIMARY KEY</td>
+  </tr>
+  <tr>
+    <td>post_id</td>
+    <td>INTEGER</td>
+    <td>NOT NULL,FOREIGN KEY (post_id) REFERENCES Users(user_id)</td>
+  </tr>
+   <tr>
+    <td>user_id</td>
+    <td>INTEGER</td>
+    <td>NOT NULL,FOREIGN KEY (user_id) REFERENCES Users(user_id)</td>
+  </tr>
+  <tr>
+    <td>comment_text</td>
+    <td>Text</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>created_at</td>
+    <td>TIMESTAMP</td>
+  </tr>
+</table>
+
+</table>
+<h2>LIKES</h2>
+<table style="width:40%">
+  <tr>
+    <th>Column</th>
+    <th>Type</th>
+    <th>Constraints</th>
+  </tr>
+  <tr>
+    <td>like_id</td>
+    <td>SERIAL</td>
+    <td>PRIMARY KEY</td>
+  </tr>
+  <tr>
+    <td>post_id</td>
+    <td>INTEGER</td>
+    <td>NOT NULL,FOREIGN KEY (post_id) REFERENCES Posts(user_id)</td>
+  </tr>
+   <tr>
+    <td>user_id</td>
+    <td>INTEGER</td>
+    <td>NOT NULL,FOREIGN KEY (user_id) REFERENCES Users(user_id)</td>
+  </tr>
+  <tr>
+    <td>created_at</td>
+    <td>TIMESTAMP</td>
+    <td>DEFAULT CURRENT_TIMESTAMP</td>
+  </tr>
+</table>
+
+<h2>Followers</h2>
+<table style="width:40%">
+  <tr>
+    <th>Column</th>
+    <th>Type</th>
+    <th>Constraints</th>
+  </tr>
+  <tr>
+    <td>follower_id</td>
+    <td>SERIAL</td>
+    <td>PRIMARY KEY</td>
+  </tr>
+  <tr>
+    <td>USER_id</td>
+    <td>INTEGER</td>
+    <td>NOT NULL,FOREIGN KEY (user_id) REFERENCES users(user_id)</td>
+  </tr>
+   <tr>
+    <td>follower_user_id</td>
+    <td>INTEGER</td>
+    <td>NOT NULL,FOREIGN KEY (follower_user_id) REFERENCES Users(user_id)</td>
+  </tr>
+  <tr>
+    <td>created_at</td>
+    <td>TIMESTAMP</td>
+    <td>DEFAULT CURRENT_TIMESTAMP</td>
+  </tr>
+</table>
+<br>
+<br>
+<h2>SQL QUERIES</h2>
+<br>
+<h3>Creating tables</h3>
+<body>
+<p>CREATE TABLE Users (<br>
+    user_id SERIAL PRIMARY KEY,<br>
+    name VARCHAR(50) NOT NULL,<br>
+    email VARCHAR(100) UNIQUE NOT NULL,<br>
+    phone_number VARCHAR(20) UNIQUE<br>
+);
+<br>
+<br>
+CREATE TABLE Posts (<br>
+    post_id SERIAL PRIMARY KEY,<br>
+    user_id INTEGER NOT NULL,<br>
+    caption TEXT,<br>
+    image_url VARCHAR(200),<br>
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,<br>
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)<br>
+);<br>
+<br>
+CREATE TABLE Comments (<br>
+    comment_id SERIAL PRIMARY KEY,<br>
+    post_id INTEGER NOT NULL,<br>
+    user_id INTEGER NOT NULL,<br>
+    comment_text TEXT NOT NULL,<br>
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,<br>
+    FOREIGN KEY (post_id) REFERENCES Posts(post_id),<br>
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)<br>
+);<br>
+<br>
+CREATE TABLE Likes (<br>
+    like_id SERIAL PRIMARY KEY,<br>
+    post_id INTEGER NOT NULL,<br>
+    user_id INTEGER NOT NULL,<br>
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,<br>
+    FOREIGN KEY (post_id) REFERENCES Posts(post_id),<br>
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)<br>
+);<br>
+<br>
+CREATE TABLE Followers (<br>
+    follower_id SERIAL PRIMARY KEY,<br>
+    user_id INTEGER NOT NULL,<br>
+    follower_user_id INTEGER NOT NULL,<br>
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,<br>
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),<br>
+    FOREIGN KEY (follower_user_id) REFERENCES Users(user_id)<br>
+); </p> 
+
+<h3>Inserting Data</h3>
+<p>
+    -- Inserting into Users table
+INSERT INTO Users (name, email, phone_number)<br>
+VALUES<br>
+    ('John Smith', 'johnsmith@gmail.com', '1234567890'),<br>
+    ('Jane Doe', 'janedoe@yahoo.com', '0987654321'),<br>
+    ('Bob Johnson', 'bjohnson@gmail.com', '1112223333'),<br>
+    ('Alice Brown', 'abrown@yahoo.com', NULL),<br>
+    ('Mike Davis', 'mdavis@gmail.com', '5556667777');<br>
+    <br>
+-- Inserting into Posts table<br>
+INSERT INTO Posts (user_id, caption, image_url)<br>
+VALUES<br>
+    (1, 'Beautiful sunset', '<https://www.example.com/sunset.jpg>'),<br>
+    (2, 'My new puppy', '<https://www.example.com/puppy.jpg>'),<br>
+    (3, 'Delicious pizza', '<https://www.example.com/pizza.jpg>'),<br>
+    (4, 'Throwback to my vacation', '<https://www.example.com/vacation.jpg>'),<br>
+    (5, 'Amazing concert', '<https://www.example.com/concert.jpg>');
+    <br>
+    <br>
+-- Inserting into Comments table<br>
+INSERT INTO Comments (post_id, user_id, comment_text)<br>
+VALUES<br>
+    (1, 2, 'Wow! Stunning.'),<br>
+    (1, 3, 'Beautiful colors.'),<br>
+    (2, 1, 'What a cutie!'),<br>
+    (2, 4, 'Aww, I want one.'),<br>
+    (3, 5, 'Yum!'),<br>
+    (4, 1, 'Looks like an awesome trip.'),<br>
+    (5, 3, 'Wish I was there!');<br>
+    <br>
+-- Inserting into Likes table<br>
+INSERT INTO Likes (post_id, user_id)<br>
+VALUES<br>
+    (1, 2),<br>
+    (1, 4),<br>
+    (2, 1),<br>
+    (2, 3),<br>
+    (3, 5),<br>
+    (4, 1),<br>
+    (4, 2),<br>
+    (4, 3),<br>
+    (5, 4),<br>
+    (5, 5);<br>
+    <br>
+-- Inserting into Followers table<br>
+INSERT INTO Followers (user_id, follower_user_id)<br>
+VALUES<br>
+    (1, 2),<br>
+    (2, 1),<br>
+    (1, 3),<br>
+    (3, 1),<br>
+    (1, 4),<br>
+    (4, 1),<br>
+    (1, 5),<br>
+    (5, 1);<br>
+<br>
+</p>
+<h3>Updating Data</h3>
+<img src="images/Update.png" alt="" style="width:700px">
+<h2>Analytical Queries</h2>
+<h3>Group BY and HAVING</h3>
+<img src="images/Group by and Having.png" alt="" style="width:700px; ">
+<br>
+<h3>SubQuery</h3>
+<img src="images/Subquery.png" alt="" style="width:700px; ">
+<br>
+<h3>Window Function</h3>
+<img src="images/Window.png" alt="" style="width:700px; ">
+<br>
+<h3>CTE</h3>
+<img src="images/CTE.png" alt="" style="width:700px; ">
+<br>
+<h3>Case Statement</h3>
+<img src="images/Case.png" alt="" style="width:700px; ">
+<br>
+<h3>Data Casting Working with Dates</h3>
+<img src="images/Date Casting.png" alt="" style="width:700px; ">
+<h3>Conclusion</h3>
+<p>
+    In this project, I took on the task of designing a data model for Instagram using PostgreSQL. I began by conceptualizing the structure and relationships needed for the database and then translated this into PostgreSQL syntax by creating different tables.<br>
+<br>
+To populate the database, I generated SQL create table statements and inserted relevant data into the tables. I showcased examples of how to update existing data within these tables to reflect dynamic changes.<br>
+<br>
+For a deeper analysis, I delved into analytics using SQL queries with conditions like where clause, ordering with orderby, grouping with group by, and filtering with the having clause. I also explained various aggregation functions that can be used to summarize data effectively.<br>
+<br>
+To enhance the complexity of my queries, I explored advanced SQL techniques such as subqueries, window functions, Common Table Expressions (CTEs), and utilized case statements for conditional logic. Additionally, I discussed methods for casting and manipulating dates, illustrating how to work seamlessly with date data in PostgreSQL. This comprehensive approach allowed me to create a robust and scalable data model tailored for Instagram's needs.<br>
+</p>
+</body>
+</html>
